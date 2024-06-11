@@ -165,8 +165,8 @@ Widget build(BuildContext context) {
                     TextSpan(
                       text: 'Register',
                       style: const TextStyle(
-                        color: Colors.blue, // Change to your preferred color
-                        decoration: TextDecoration.none, // Optional: to make it look clickable
+                        color: Colors.blue, 
+                        decoration: TextDecoration.none, 
                       ),
                       recognizer: TapGestureRecognizer()
                         ..onTap = () {

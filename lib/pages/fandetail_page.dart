@@ -10,14 +10,24 @@ class FanDetailPage extends StatefulWidget {
 }
 
 class _FanDetailPageState extends State<FanDetailPage> {
-  int _speed = 3; // Tốc độ mặc định ban đầu
+  int _speed = 3; // Initial default speed
   final DatabaseReference _databaseReference = FirebaseDatabase.instance.ref();
+
+  @override
+  void initState() {
+    super.initState();
+    _databaseReference.child('Fan Value').onValue.listen((event) {
+      setState(() {
+        _speed = (event.snapshot.value as int?) ?? _speed;
+      });
+    });
+  }
 
   void _setSpeed(int value) {
     setState(() {
       _speed = value;
-      _databaseReference.update({'Fan Value': _speed.round()});
     });
+    _databaseReference.update({'Fan Value': _speed});
   }
 
   @override
@@ -48,7 +58,9 @@ class _FanDetailPageState extends State<FanDetailPage> {
                         _setSpeed(i);
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: _speed == i ? const Color.fromARGB(255, 140, 136, 136) : null,
+                        backgroundColor: _speed == i
+                            ? const Color.fromARGB(255, 140, 136, 136)
+                            : null,
                       ),
                       child: Text(
                         '$i',

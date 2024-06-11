@@ -15,11 +15,21 @@ class _LightDetailPageState extends State<LightDetailPage> {
   double _brightness = 128; // Giá trị độ sáng ban đầu
   final DatabaseReference _databaseReference = FirebaseDatabase.instance.ref();
 
+  @override
+  void initState() {
+    super.initState();
+    _databaseReference.child('Light Value').onValue.listen((event) {
+      setState(() {
+        _brightness = (event.snapshot.value as double?) ?? _brightness;
+      });
+    });
+  }
+
   void _updateBrightness(double value) {
     setState(() {
       _brightness = value;
-      _databaseReference.update({'Light Value': _brightness.round()}); 
     });
+    _databaseReference.update({'Light Value': _brightness.round()}); 
   }
 
   @override

@@ -18,7 +18,9 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   User? user;
-  final DatabaseReference _databaseReference = FirebaseDatabase.instance.ref();
+  final DatabaseReference _databaseReference = FirebaseDatabase.instance.ref().child('devices_command');
+  final DatabaseReference _tempRef = FirebaseDatabase.instance.ref().child('Temp');
+  final DatabaseReference _moistureRef = FirebaseDatabase.instance.ref().child('Moisture');
 
   double temperature = 0;
   double moisture = 0;
@@ -53,7 +55,7 @@ class _HomePageState extends State<HomePage> {
 
   // Handle when receive sensor value
   void _activateListeners() {
-    _databaseReference.child('Temp').onValue.listen((event) {
+    _tempRef.onValue.listen((event) {
       final temp = event.snapshot.value;
       if (temp != null) {
         setState(() {
@@ -62,7 +64,7 @@ class _HomePageState extends State<HomePage> {
       }
     });
 
-    _databaseReference.child('Moisture').onValue.listen((event) {
+    _moistureRef.onValue.listen((event) {
       final moist = event.snapshot.value;
       if (moist != null) {
         setState(() {
@@ -395,13 +397,13 @@ class _HomePageState extends State<HomePage> {
                 itemBuilder: (context, index) {
                   return InkWell(
                     onTap: () {
-                      // final deviceName = mySmartDevices[index]["smartDeviceName"];
+                      final deviceName = mySmartDevices[index]["smartDeviceName"];
                       final powerStatus = mySmartDevices[index]["powerStatus"];
-                      if (powerStatus) {
+                      if (powerStatus && (deviceName == 'Light' || deviceName == 'Fan')) {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => mySmartDevices[index]['detailPage'], // Sửa theo đúng khóa và giá trị trong mySmartDevices
+                            builder: (context) => mySmartDevices[index]['detailPage'], 
                           ),
                         );
                       } else {
